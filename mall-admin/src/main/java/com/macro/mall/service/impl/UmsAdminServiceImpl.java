@@ -20,7 +20,6 @@ import com.macro.mall.service.UmsAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,10 +28,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,28 +40,31 @@ import java.util.List;
 /**
  * 后台用户管理Service实现类
  * Created by macro on 2018/4/26.
+ * @author chenxuanxu
  */
 @Service
 public class UmsAdminServiceImpl implements UmsAdminService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
-    @Autowired
+    @Resource
     private JwtTokenUtil jwtTokenUtil;
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
-    @Autowired
+    @Resource
     private UmsAdminMapper adminMapper;
-    @Autowired
+    @Resource
     private UmsAdminRoleRelationMapper adminRoleRelationMapper;
-    @Autowired
+    @Resource
     private UmsAdminRoleRelationDao adminRoleRelationDao;
-    @Autowired
+    @Resource
     private UmsAdminLoginLogMapper loginLogMapper;
 
     @Override
     public UmsAdmin getAdminByUsername(String username) {
         //先从缓存中获取数据
         UmsAdmin admin = getCacheService().getAdmin(username);
-        if (admin != null) return admin;
+        if (admin != null) {
+            return admin;
+        }
         //缓存中没有从数据库中获取
         UmsAdminExample example = new UmsAdminExample();
         example.createCriteria().andUsernameEqualTo(username);
